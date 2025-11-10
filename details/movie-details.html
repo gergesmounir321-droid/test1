@@ -1,0 +1,76 @@
+@if (movie) {
+<div class="container my-4">
+  <div class="row align-items-start g-4">
+    <!-- Movie Poster -->
+    <div class="col-md-4">
+      <img
+        [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path"
+        class="w-100 rounded shadow"
+        alt="{{ movie.title }}"
+      />
+    </div>
+
+    <!-- Movie Details -->
+    <div class="col-md-8">
+      <h1 class="title mb-3">{{ movie.title }}</h1>
+
+      <p><strong>Release date:</strong> {{ movie.release_date }}</p>
+
+      <!-- Star Rating -->
+      <div class="mb-3 d-flex align-items-center">
+        <strong class="me-2">Rating:</strong>
+
+        <ng-container *ngIf="movie?.vote_average as rating">
+          <ng-container *ngFor="let star of [1, 2, 3, 4, 5]; let i = index">
+            <i
+              class="bi"
+              [class.bi-star-fill]="rating / 2 >= i + 1"
+              [class.bi-star-half]="rating / 2 > i && rating / 2 < i + 1"
+              [class.bi-star]="rating / 2 <= i"
+              [class.text-warning]="rating / 2 > i"
+              [class.text-secondary]="rating / 2 <= i"
+            >
+            </i>
+          </ng-container>
+          <span class="ms-2 text-muted small">({{ rating.toFixed(1) }}/10)</span>
+        </ng-container>
+      </div>
+      <p class="text-muted">{{ movie.overview }}</p>
+    </div>
+  </div>
+
+  <hr class="my-4" />
+
+  <!-- Recommended Movies -->
+  <h3>Recommended Movies</h3>
+  @if (recommendedMovies.length > 0) {
+  <div class="row">
+    @for (rec of recommendedMovies; track rec.id) {
+    <div class="col-md-3 mb-4">
+      <div class="card h-100 shadow-sm">
+        <img
+          [src]="'https://image.tmdb.org/t/p/w500' + rec.poster_path"
+          class="card-img-top w-100 h-75"
+          alt="{{ rec.title }}"
+        />
+        <div class="card-body">
+          <h6 class="card-title">{{ rec.title }}</h6>
+          <p class="text-muted small">Rating: {{ rec.vote_average }}</p>
+
+          <button class="btn btn-outline-primary btn-sm w-100" (click)="goToMovie(rec.id)">
+            View Details
+          </button>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+  } @else {
+  <p>No recommendations available.</p>
+  }
+</div>
+} @else {
+<div class="text-center mt-5">
+  <h3>Loading movie details...</h3>
+</div>
+}
